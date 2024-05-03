@@ -10,9 +10,9 @@ import {
   signup,
 } from "../redux/reducers/user_slice";
 import { error, success } from "../redux/reducers/notification_slice";
+import { fetch_messages } from "../redux/reducers/message_slice";
 
 export default function Home() {
-  const messages = [];
   const { action } = useParams();
   const dispatch = useDispatch();
   const [isSignin, setIsSignin] = useState(true);
@@ -24,8 +24,16 @@ export default function Home() {
     loading_signup,
   } = useSelector((state) => state.user);
 
+  const { messages, loading_messages, loading_create } = useSelector(
+    (state) => state.message
+  );
+
   useEffect(() => {
-    dispatch(fetch_user());
+    dispatch(fetch_user()).then((res) => {
+      if (!res.error) {
+        dispatch(fetch_messages({ channel: "6634640acfe51d5ec7e147c6" }));
+      }
+    });
   }, [action]);
 
   const GlobalChannel = () => {
